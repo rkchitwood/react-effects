@@ -36,13 +36,36 @@ function Deck(){
         }
     }
 
+    async function shuffleDeck(){
+        try{
+            setIsShuffling(true);
+            const shuffleResp = await axios.get(`${BASE_URL}/${deck.deck_id}/shuffle`);
+            setDrawn([]);
+        }catch(err){
+            alert(err);
+        }finally{
+            setIsShuffling(false);
+        }
+    }
+
+    function renderShuffleButton(){
+        if (!deck) return null;
+        return(
+            <button
+                onClick={shuffleDeck}
+                disabled={isShuffling}>
+                Shuffle Deck
+            </button>
+        )
+    }
+
     function renderDrawButton(){
         if (!deck) return null;
         return(
             <button
                 onClick={drawCard}
                 disabled={isShuffling}>
-                Shuffle Deck
+                Draw Card
             </button>
         )
     }
@@ -50,6 +73,7 @@ function Deck(){
     return(
         <div className='Deck'>
             {renderDrawButton}
+            {renderShuffleButton}
             {drawn.map(c => (
                 <Card key={c.id} name={c.name} image={c.image}/>
             )
